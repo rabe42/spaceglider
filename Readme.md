@@ -5,7 +5,8 @@ This will be a simple game, inspired by Starglider from 1987. One of
 the first first-person starship shooters, written for Atari ST, Amiga and
 IBM PC.
 
-You may be able to relive the experience [here](https://www.myabandonware.com/game/starglider-95/play-95).
+You may be able to relive the experience [here](
+https://www.myabandonware.com/game/starglider-95/play-95).
 
 The original game revolves around a story, about freeing an planet
 from the Egrons, stopping them to conquer another part of the galaxy. This
@@ -25,7 +26,7 @@ discovered and destroyed by the enemy.
 
 The induction pads are also used by the enemy and connected with the energy
 sources by a grid of microwave lasers. You should avoid to hit any of these
-lasers, as they will vaporize your vessels within milliseconds.
+lasers beams, as they will vaporize your vessels within milliseconds.
 
 The numbers and positions of the different enemy vessels are computer
 generated in certain ranges, which make sure, that you can get used to the
@@ -36,25 +37,25 @@ There will be just final fight against the last stand of the enemy AI.
 
 It is assumed, that the pilot is integrated into the machine. He get a
 360° fisheye view from all sensor data. The center focus is on the area,
-reachable with the main guns.
+reachable with the main weapons.
 
-Please be aware, that this implies not be that this is the direction, the
+Please be aware, that this implies not that this is the direction the
 vessel is heading to. As we are basically operating in space, the current
 direction of view can easily differ from the direction of the gun. An
 acceleration will lead to an adaption of the vectors, as the four engines
 are firing in exactly the opposite direction of the guns.
 
-These guns are two femtosecond gigawatt lasers. While they will be not
-visible for the pilots eyes, there are an indicators on the screen
-adapted for the pilots senses (acoustic, visual), indicating direction and
-hits.
+These guns are two femtosecond gigawatt lasers. With the integration of the
+pilot into the vessel, the eyes and ears of the pilot were adapted, so that
+he can "see" the beams and "hear" a sound, any time he fires, hits or is
+been hitten by enemy fire.
 
 Spacecrafts operating deep space, are not painted somehow colorful. Color
-would just add dead weight and gain nothing in this are. (Nearer to a
-sun, it is of value to reflect the sun light to avoid additional need for
-cooling.) Given, the availability and durability of the material,
-spacecrafts are made from different carbon composites and therefore pitch
-black.
+would just add dead weight and gain nothing in terms of survival factors.
+(Nearer to a sun, it is of value to reflect the sun light to avoid
+additional need for cooling.) Given, the availability and durability of the
+material, spacecrafts are made from different carbon composites and
+therefore pitch black.
 
 # Story
 
