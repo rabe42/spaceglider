@@ -12,8 +12,9 @@ fn main() {
                             ..Default::default()
                         }),
                     ..Default::default()
-                })
-            , game::Spaceglider)
+                }),
+                game::Spaceglider
+            )
         )
         .run();
 }
