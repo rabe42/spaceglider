@@ -80,6 +80,13 @@ needs, to enhance further.
 In a first step, the mankind has to conquer a moon in the outer system
 back. This is the objective of the complete mission.
 
+The guy, how was the source of the brain inside the pod, was used to be a
+small child, when he was burned, almost to ashes. He was already human
+enough, to feel the attraction to other humans and flexible enough, to be
+adapted to the geometry and physics of space flight. He is a member of a
+small group of pod pilots, all educated in a facility, similar to the
+one described in 'Endors Game'.
+
 # Technically
 
 The application is written in the rust language, using the Glium OpenGL
