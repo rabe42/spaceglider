@@ -8,6 +8,7 @@ struct Person;
 #[derive(Component)]
 struct Name(String);
 
+/// Setup the different game parts.
 fn setup(mut commands: Commands,
          meshes: ResMut<Assets<Mesh>>,
          materials: ResMut<Assets<ColorMaterial>>,
@@ -18,10 +19,10 @@ fn setup(mut commands: Commands,
 
     // Creating some static text to be displayed on the HUD
     commands.spawn(TextBundle::from_section(
-        "Hold 'Left' or 'Right' to change the line width",
+        "© Dr. Ralf Berger",
         TextStyle {
             font: asset_server.load("fonts/Gruppo-Regular.ttf"),
-            font_size: 24.,
+            font_size: 12.,
             color: Color::WHITE,
         },
     ));
@@ -34,6 +35,7 @@ fn setup(mut commands: Commands,
 #[derive(Resource)]
 struct GreetTimer(Timer);
 
+/// Just demonstrate, that we are still alive.
 fn greet_people(
     time: Res<Time>,
     mut timer: ResMut<GreetTimer>,
@@ -46,6 +48,7 @@ fn greet_people(
     }
 }
 
+/// Update the HUD with status data from the ships model and the space environement.
 fn update_hud(
     mut gizmos: Gizmos,
     time: Res<Time>
@@ -84,6 +87,7 @@ fn update_hud(
 pub struct Spaceglider;
 
 impl Plugin for Spaceglider {
+
     fn build(&self, app: &mut App) {
         app.insert_resource(GreetTimer(Timer::from_seconds(2.0, TimerMode::Repeating)))
             // Setting the background color
