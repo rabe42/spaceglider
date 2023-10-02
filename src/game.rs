@@ -37,8 +37,8 @@ impl Plugin for Spaceglider {
 
 /// Setup the different game parts.
 fn setup(mut commands: Commands,
-         meshes: ResMut<Assets<Mesh>>,
-         materials: ResMut<Assets<ColorMaterial>>,
+         _meshes: ResMut<Assets<Mesh>>,
+         _materials: ResMut<Assets<ColorMaterial>>,
          asset_server: Res<AssetServer>,
 ) {
     // The camera for the HUD
