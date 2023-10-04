@@ -1,6 +1,7 @@
 use std::f32::consts::PI;
 
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
 
 #[derive(Resource)]
 struct GreetTimer(Timer);
@@ -13,6 +14,11 @@ struct Person;
 
 #[derive(Component)]
 struct Name(String);
+
+/// This is the cross hair, used to get information about orientation, of the vessel, the velocity
+/// of the vessel and the relative velocity of a selected vessel.
+#[derive(Component)]
+struct CrossHair;
 
 // Note: Everything, which should be displayed must be a component or a resource. 
 // The magic happens in the function parameter lists, where an arbitrary number of Queries on
@@ -31,7 +37,7 @@ impl Plugin for Spaceglider {
             // Initializes the system
             .add_systems(Startup, setup)
             // Start the interaction
-            .add_systems(Update, (update_hud, greet_people));
+            .add_systems(Update, (update_hud, update_cross_hair, greet_people));
     }
 }
 
@@ -60,6 +66,12 @@ fn setup(mut commands: Commands,
         color: Color::BLACK,
     };
 
+    let cross_hair_text_style = TextStyle {
+        font: asset_server.load("fonts/Gruppo-Regular.ttf"),
+        font_size: 12.,
+        color: Color::WHITE,
+    };
+
     // Create a area, where we will write dynamic text onto.
     // Note: We spawn a tuple here!
     commands.spawn((
@@ -71,6 +83,17 @@ fn setup(mut commands: Commands,
             ..default()
         }),
         ExampleDisplay,
+    ));
+
+    commands.spawn((
+        TextBundle::from_section("X", cross_hair_text_style)
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            top: Val::Px(200.),
+            left: Val::Px(300.),
+            ..default()
+        }),
+        CrossHair,
     ));
 
     commands.spawn((Person, Name("Elaina Proctor".to_string())));
@@ -126,8 +149,22 @@ fn update_hud(
     gizmos.arc_2d(Vec2::ZERO, sin / 10., PI / 2., 350., Color::ORANGE_RED);
 
     // Write some information on the screen
-    // Create a cross hair
     let mut display = display.single_mut();
     display.sections[0].value = format!("Distance: {}\nObject Type: {}", time.elapsed_seconds(), "Hypo");
+
 }
 
+fn update_cross_hair(
+    mut gizmos: Gizmos,
+    mut cross_hair: Query<&mut Text, With<CrossHair>>,  // It seems, that just one text
+                                                        // selection per function call is
+                                                        // allowed.
+    window_query: Query<&Window, With<PrimaryWindow>>,
+) {
+    // Create a cross hair
+    let mut cross_hair = cross_hair.single_mut();
+    cross_hair.sections[0].value = format!("XXX");
+    let window = window_query.single();
+    gizmos.line_2d(Vec2 { x: 0. - window.width() / 4., y: 0. }, Vec2 { x: window.width() / 4., y: 0. }, Color::WHITE);
+    gizmos.line_2d(Vec2 { x: 0., y: -window.height() / 4. }, Vec2 { x: 0., y: window.height() / 4. }, Color::WHITE);
+}
