@@ -1,6 +1,13 @@
 use std::f32::consts::PI;
 
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
+
+#[derive(Resource)]
+struct GreetTimer(Timer);
+
+#[derive(Component)]
+struct ExampleDisplay;
 
 #[derive(Component)]
 struct Person;
@@ -8,10 +15,36 @@ struct Person;
 #[derive(Component)]
 struct Name(String);
 
+/// This is the cross hair, used to get information about orientation, of the vessel, the velocity
+/// of the vessel and the relative velocity of a selected vessel.
+#[derive(Component)]
+struct CrossHair;
+
+// Note: Everything, which should be displayed must be a component or a resource. 
+// The magic happens in the function parameter lists, where an arbitrary number of Queries on
+// Resources (Res or ResMut) and Components (Query) may be executed.
+
+/// This is the basic plugin for the Spaceglider game. In the first step, I try to setup the head
+/// up dsiplay (HUD).
+pub struct Spaceglider;
+
+impl Plugin for Spaceglider {
+
+    fn build(&self, app: &mut App) {
+        app.insert_resource(GreetTimer(Timer::from_seconds(2.0, TimerMode::Repeating)))
+            // Setting the background color
+            .insert_resource(ClearColor(Color::rgb(0.5, 0.5, 0.5)))
+            // Initializes the system
+            .add_systems(Startup, setup)
+            // Start the interaction
+            .add_systems(Update, (update_hud, update_cross_hair, greet_people));
+    }
+}
+
 /// Setup the different game parts.
 fn setup(mut commands: Commands,
-         meshes: ResMut<Assets<Mesh>>,
-         materials: ResMut<Assets<ColorMaterial>>,
+         _meshes: ResMut<Assets<Mesh>>,
+         _materials: ResMut<Assets<ColorMaterial>>,
          asset_server: Res<AssetServer>,
 ) {
     // The camera for the HUD
@@ -27,13 +60,46 @@ fn setup(mut commands: Commands,
         },
     ));
 
+    let display_text_style = TextStyle {
+        font: asset_server.load("fonts/Gruppo-Regular.ttf"),
+        font_size: 22.,
+        color: Color::BLACK,
+    };
+
+    let cross_hair_text_style = TextStyle {
+        font: asset_server.load("fonts/Gruppo-Regular.ttf"),
+        font_size: 12.,
+        color: Color::WHITE,
+    };
+
+    // Create a area, where we will write dynamic text onto.
+    // Note: We spawn a tuple here!
+    commands.spawn((
+        TextBundle::from_section("", display_text_style)
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            top: Val::Px(10.),
+            right: Val::Px(20.0),
+            ..default()
+        }),
+        ExampleDisplay,
+    ));
+
+    commands.spawn((
+        TextBundle::from_section("X", cross_hair_text_style)
+        .with_style(Style {
+            position_type: PositionType::Absolute,
+            top: Val::Px(200.),
+            left: Val::Px(300.),
+            ..default()
+        }),
+        CrossHair,
+    ));
+
     commands.spawn((Person, Name("Elaina Proctor".to_string())));
     commands.spawn((Person, Name("Renzo Hume".to_string())));
     commands.spawn((Person, Name("Zayna Nieves".to_string())));
 }
-
-#[derive(Resource)]
-struct GreetTimer(Timer);
 
 /// Just demonstrate, that we are still alive.
 fn greet_people(
@@ -51,6 +117,7 @@ fn greet_people(
 /// Update the HUD with status data from the ships model and the space environement.
 fn update_hud(
     mut gizmos: Gizmos,
+    mut display: Query<&mut Text, With<ExampleDisplay>>,
     time: Res<Time>
 ) {
     let sin = time.elapsed_seconds().sin() * 50.;
@@ -80,21 +147,24 @@ fn update_hud(
     // Arcs default amount of segments is linerarly interpolated between
     // 1 and 32, using the arc length as scalar.
     gizmos.arc_2d(Vec2::ZERO, sin / 10., PI / 2., 350., Color::ORANGE_RED);
+
+    // Write some information on the screen
+    let mut display = display.single_mut();
+    display.sections[0].value = format!("Distance: {}\nObject Type: {}", time.elapsed_seconds(), "Hypo");
+
 }
 
-/// This is the basic plugin for the Spaceglider game. In the first step, I try to setup the head
-/// up dsiplay (HUD).
-pub struct Spaceglider;
-
-impl Plugin for Spaceglider {
-
-    fn build(&self, app: &mut App) {
-        app.insert_resource(GreetTimer(Timer::from_seconds(2.0, TimerMode::Repeating)))
-            // Setting the background color
-            .insert_resource(ClearColor(Color::rgb(0.5, 0.5, 0.5)))
-            // Initializes the system
-            .add_systems(Startup, setup)
-            // Start the interaction
-            .add_systems(Update, (update_hud, greet_people));
-    }
+fn update_cross_hair(
+    mut gizmos: Gizmos,
+    mut cross_hair: Query<&mut Text, With<CrossHair>>,  // It seems, that just one text
+                                                        // selection per function call is
+                                                        // allowed.
+    window_query: Query<&Window, With<PrimaryWindow>>,
+) {
+    // Create a cross hair
+    let mut cross_hair = cross_hair.single_mut();
+    cross_hair.sections[0].value = format!("XXX");
+    let window = window_query.single();
+    gizmos.line_2d(Vec2 { x: 0. - window.width() / 4., y: 0. }, Vec2 { x: window.width() / 4., y: 0. }, Color::WHITE);
+    gizmos.line_2d(Vec2 { x: 0., y: -window.height() / 4. }, Vec2 { x: 0., y: window.height() / 4. }, Color::WHITE);
 }
